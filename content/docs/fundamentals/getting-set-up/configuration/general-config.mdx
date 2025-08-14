@@ -5,10 +5,9 @@ description: Key configuration options in config.yml and what they do.
 
 ### Basics
 
-- `pluginPrefix`: Prefix text used for plugin messages in console/chat.
 - `allowOnlyOneGem`: If true, restrict each player to a single gem.
 - `canDropGems`: If false, players cannot drop gems.
-- `giveGemOnFirstLogin`: If false, first-join gem gifting is disabled.
+- `giveGemOnFirstLogin`: If true, first-time players receive a random gem on their first join.
 - `canUpgradeGems`: If false, gem upgrading is disabled.
 - `canCraftGems`: If false, crafting new gems is disabled.
 - `keepGemsOnDeath`: If false, gems drop when a player dies.
@@ -17,29 +16,55 @@ description: Key configuration options in config.yml and what they do.
 ### Gameplay and safety
 
 - `explosionDamageAllowed`: If false, destructive abilities are softened (reduced block damage).
-- `preventGemPowerTampering`: If true, players can’t interact with spawned projectiles or entities (e.g., no fireball deflects).
-- `doGemDecay`: If true, on player death their gem level decreases by 1.
-- `doDecayOnLevel1`: When `doGemDecay` is true, allow decay from level 1 (may destroy the gem).
+- `preventGemPowerTampering`: If true, players can’t interact with projectiles or entities spawned by gems (e.g., no fireball deflects).
+- `doGemDecay`: If true, when a player dies, their gem(s) lose 1 level.
+- `doGemDecayOnLevel1`: When `doGemDecay` is true, allow decay from level 1 (will destroy the gem).
 - `dragonEggHalfCooldown`: If true, carrying a dragon egg halves gem cooldowns.
-- `randomizedColors`: If true, gems can appear in randomized colors.
+- `randomizedColors`: If true, a gem’s displayed name color may be randomized (visual only).
 
 ### Timing and performance
 
 - `cooldownBoostPerLevelInSeconds`: Time reduced from ability cooldown per gem level.
 - `delayToUseGemsOnJoin`: Seconds to wait before allowing gem use after login.
 - `gemCreationAttempts`: Attempts to generate a valid gem before giving up (raise if many gems are disabled and users get none).
-- `blockedReplacingBlocks`: Materials that abilities are not allowed to overwrite.
-- `allowMovingGems`: Enable moving gems between containers (experimental/beta).
+- `blockedReplacingBlocks`: [Materials](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) that abilities are not allowed to overwrite.
+- `allowMovingGems`: Enable moving gems between containers (experimental).
 - `doDebuffForTemperature`: Apply debuffs when gem element clashes with environment temperature (e.g., ice in the Nether).
 
 ### Telemetry and updates
 
 - `allowMetrics`: If true, sends anonymous usage stats to help improve the plugin.
 - `runUpdater`: If true, notifies admins when updates are available.
+- `AA-ID`: Analytics identifier used for telemetry; do not change unless instructed.
+
+### Diagnostics
+
+- `debugMode`: If true, enables extra logging to help diagnose issues (may be noisy).
 
 ### Limits and cosmetics
 
 - `maxGemLevel`: Maximum level reachable via upgrades.
 - `allowCosmeticParticleEffects`: If true, show ambient particles related to held gems.
-- `cosmeticParticleEffectInterval`: Ticks between cosmetic particle spawns (lower = more frequent, potentially heavier).
+- `cosmeticParticleEffectInterval`: Ticks between cosmetic particle spawns (lower = more frequent, heavier).
 - `gemCacheExpireTime`: How long to keep computed gem data cached (balance CPU vs. RAM usage).
+
+### Progression and unlocks
+
+- `unlockNewAbilitiesOnLevelX`: The level at which new abilities become available for a gem.
+- `giveGemPermanentEffectOnLevelX`: If true, grants the gem’s permanent effect once the unlock level is reached.
+- `unlockShiftAbilityOnLevelX`: If true, unlock the Shift ability at the configured unlock level.
+- `upgradeGemOnKill`: If true, killing entities can upgrade/level up your gem.
+
+### Integrations
+
+- `isWorldGuardSupportEnabled`: If true, respects WorldGuard region flags for abilities.
+- `isCombatLogXSupportEnabled`: If true, integrates with CombatLogX to prevent abuse during combat.
+
+### Internationalization
+
+- `languageCode`: Two-letter language code (e.g., `en`).
+- `countryCode`: Two-letter country/region code (e.g., `US`).
+
+### Maintenance and migration
+
+- `attemptFixOldGems`: If true, attempts to auto-fix or migrate gems created by older plugin versions.
