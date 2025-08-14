@@ -1,0 +1,51 @@
+---
+title: General Config
+description: Key configuration options in config.yml and what they do.
+---
+
+Below is a paraphrased overview of notable options in `config.yml`. Names are shown in code for clarity.
+
+### Basics
+
+- `pluginPrefix`: Prefix text used for plugin messages in console/chat.
+- `allowOnlyOneGem`: If true, restrict each player to a single gem.
+- `canDropGems`: If false, players cannot drop gems.
+- `giveGemOnFirstLogin`: If false, first-join gem gifting is disabled.
+- `canUpgradeGems`: If false, gem upgrading is disabled.
+- `canCraftGems`: If false, crafting new gems is disabled.
+- `keepGemsOnDeath`: If false, gems drop when a player dies.
+- `gemsHaveDescriptions`: If true, new gems include descriptive lore.
+
+### Gameplay and safety
+
+- `explosionDamageAllowed`: If false, destructive abilities are softened (reduced block damage).
+- `preventGemPowerTampering`: If true, players can’t interact with spawned projectiles or entities (e.g., no fireball deflects).
+- `doGemDecay`: If true, on player death their gem level decreases by 1.
+- `doDecayOnLevel1`: When `doGemDecay` is true, allow decay from level 1 (may destroy the gem).
+- `dragonEggHalfCooldown`: If true, carrying a dragon egg halves gem cooldowns.
+- `randomizedColors`: If true, gems can appear in randomized colors.
+
+### Timing and performance
+
+- `cooldownBoostPerLevelInSeconds`: Time reduced from ability cooldown per gem level.
+- `delayToUseGemsOnJoin`: Seconds to wait before allowing gem use after login.
+- `gemCreationAttempts`: Attempts to generate a valid gem before giving up (raise if many gems are disabled and users get none).
+- `blockedReplacingBlocks`: Materials that abilities are not allowed to overwrite.
+- `allowMovingGems`: Enable moving gems between containers (experimental/beta).
+- `doDebuffForTemperature`: Apply debuffs when gem element clashes with environment temperature (e.g., ice in the Nether).
+
+### Telemetry and updates
+
+- `allowMetrics`: If true, sends anonymous usage stats to help improve the plugin.
+- `runUpdater`: If true, notifies admins when updates are available.
+
+### Limits and cosmetics
+
+- `maxGemLevel`: Maximum level reachable via upgrades.
+- `allowCosmeticParticleEffects`: If true, show ambient particles related to held gems.
+- `cosmeticParticleEffectInterval`: Ticks between cosmetic particle spawns (lower = more frequent, potentially heavier).
+- `gemCacheExpireTime`: How long to keep computed gem data cached (balance CPU vs. RAM usage).
+
+---
+
+Next: [Advanced Configs](/fundamentals/getting-set-up/configuration/advanced-configs)

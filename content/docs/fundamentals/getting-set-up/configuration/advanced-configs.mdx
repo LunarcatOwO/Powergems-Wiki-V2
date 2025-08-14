@@ -1,0 +1,33 @@
+---
+title: Advanced Configs
+description: Files for recipes, cooldowns, enabled gems, lore, and materials.
+---
+
+If these files start nearly empty, trigger abilities in-game at least once to let the plugin populate them.
+
+## recipes.yml
+
+For advanced users. Define shaped recipes:
+
+- Shape: rows of letters separated by commas.
+- Ingredients: map letters to Bukkit material names (see the official Material list).
+
+## cooldown.yml
+
+Set the base cooldown (in seconds) for abilities at level 1. Higher levels reduce cooldown according to `cooldownBoostPerLevelInSeconds` in `config.yml`.
+
+## activeGems.yml
+
+Enable or disable specific gems server-wide.
+
+## GemLore.yml
+
+Controls the lore text applied to newly created gems.
+
+## gemMaterials.yml
+
+Set the visual/material used for each gem item (uses Bukkit Material names).
+
+---
+
+Back: [General Config](/fundamentals/getting-set-up/configuration/general-config) · Next: [FAQ](/faq)
