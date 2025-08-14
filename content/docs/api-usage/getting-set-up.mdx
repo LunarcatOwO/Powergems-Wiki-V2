@@ -1,0 +1,193 @@
+---
+title: Getting set up
+description: Set up your development environment and create your first PowerGems addon using SealLib.
+---
+
+This guide walks you through building a simple PowerGems addon using the new API in PowerGems and SealLib. We’ll use Maven.
+
+Requirements
+
+- Java 17+
+- Maven
+- A Paper/Spigot server with PowerGems and SealLib installed
+
+Step 1 — Create a plugin project
+
+- Create a Maven project (jar packaging) targeting Java 17.
+- Use your own groupId/artifactId. Example below uses dev.yourname.powergemsaddon.
+
+pom.xml
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>dev.yourname</groupId>
+  <artifactId>powergems-addon</artifactId>
+  <version>1.0.0</version>
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>iseal.dev</id>
+      <url>https://maven.iseal.dev/repository/maven-releases/</url>
+    </repository>
+    <repository>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+    </repository>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- Spigot API provided at runtime by server -->
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>1.20.1-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- SealLib as provided dependency (match server’s version) -->
+    <dependency>
+      <groupId>dev.iseal</groupId>
+      <artifactId>SealLib</artifactId>
+      <version>1.2.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- PowerGems API is exposed through the plugin itself; you only need it for compile time in most setups. 
+         Prefer depending on classes in dev.iseal.powergems.api and abstract Gem. -->
+    <dependency>
+      <groupId>dev.iseal</groupId>
+      <artifactId>PowerGems</artifactId>
+      <version>3.6.1.0-BETA7-DEV1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
+```
+
+Step 2 — plugin.yml
+
+Add a minimal plugin.yml. Ensure you depend on PowerGems and SealLib so your addon loads after them.
+
+```yaml
+name: PowerGemsAddon
+main: dev.yourname.powergemsaddon.AddonMain
+version: 1.0.0
+api-version: 1.20
+authors: ["YourName"]
+depend: [SealLib, PowerGems]
+```
+
+Step 3 — Implement a Gem
+
+Create a class extending `dev.iseal.powergems.misc.AbstractClasses.Gem`. Implement the required methods and behavior. You can access game state via Bukkit and plugin systems via SealLib utilities if needed.
+
+```java
+package dev.yourname.powergemsaddon.gems;
+
+import dev.iseal.powergems.misc.AbstractClasses.Gem;
+import org.bukkit.Particle;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ExampleGem extends Gem {
+    public ExampleGem() {
+        super("Example"); // display name used internally
+    }
+
+    @Override
+    protected void rightClick(Player plr, int level) {
+        plr.sendMessage("Right-click! Level=" + level);
+    }
+
+    @Override
+    protected void leftClick(Player plr, int level) {
+        plr.sendMessage("Left-click! Level=" + level);
+    }
+
+    @Override
+    protected void shiftClick(Player plr, int level) {
+        plr.sendMessage("Shift-click! Level=" + level);
+    }
+
+    @Override
+    public ArrayList<String> getDefaultLore() {
+        return new ArrayList<>(List.of("A demo gem.", "Scales with level."));
+    }
+
+    @Override
+    public PotionEffectType getDefaultEffectType() {
+        return PotionEffectType.SPEED; // optional baseline effect
+    }
+
+    @Override
+    public int getDefaultEffectLevel() {
+        return 1;
+    }
+
+    @Override
+    public Particle getDefaultParticle() {
+        return Particle.CRIT;
+    }
+
+    @Override
+    public BlockData getParticleBlockData() { return null; }
+}
+```
+
+Step 4 — Register the Gem using the new API
+
+Use the API entrypoint `dev.iseal.powergems.api.ApiManager` to register your gem class from your plugin’s onEnable.
+
+```java
+package dev.yourname.powergemsaddon;
+
+import dev.iseal.powergems.api.ApiManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class AddonMain extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        // Register this plugin as an addon (reserved for future hooks)
+        ApiManager.getInstance().registerAddonPlugin(this);
+
+        // Register your gem class
+        boolean ok = ApiManager.getInstance().registerGemClass(dev.yourname.powergemsaddon.gems.ExampleGem.class);
+        if (!ok) {
+            getLogger().warning("Failed to register ExampleGem");
+        }
+    }
+}
+```
+
+Step 5 — Build and test
+
+- Build your jar with Maven and drop it into your server’s plugins folder alongside PowerGems and SealLib.
+- Start the server. On first run, PowerGems will materialize configuration for each registered gem; your gem should appear in relevant configs and be usable.
+
+Tips and notes
+
+- Version matching: ensure the SealLib version on your server matches what you compile against. PowerGems will check for exact SealLib version by default.
+- Cooldowns and levels: use the `Gem` base class helpers; cooldowns are resolved via `CooldownManager` and level from `GemManager`.
+- Particles: return a default particle; PowerGems will resolve final particle from config via `GemManager`/`GemParticleConfigManager`.
+- Compatibility: WorldGuard/CombatLogX integration is handled by PowerGems; your gem actions automatically respect cooldowns and combat tagging via the base `Gem.call` flow.
+
+What’s next?
+
+- Explore utility methods in SealLib (I18N, Metrics) if your addon needs localization or telemetry.
+- Check other classes under `dev.iseal.powergems.api` as they evolve.
+- See FAQ or open a discussion on the community Discord for advanced patterns.
