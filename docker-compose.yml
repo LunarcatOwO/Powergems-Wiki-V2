@@ -8,3 +8,14 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=powergems-wiki"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 60 --cleanup --rolling-restart --scope powergems-wiki --label-enable
+    restart: always
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=60
