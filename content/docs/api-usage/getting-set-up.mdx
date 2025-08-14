@@ -8,7 +8,6 @@ This guide walks you through building a simple PowerGems addon using the new API
 Requirements
 
 - Java 17+
-- Maven
 - A Paper/Spigot server with PowerGems and SealLib installed
 
 Step 1 — Create a plugin project
@@ -162,11 +161,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AddonMain extends JavaPlugin {
     @Override
     public void onEnable() {
-        // Register this plugin as an addon (reserved for future hooks)
+        // Register this plugin as an addon
         ApiManager.getInstance().registerAddonPlugin(this);
 
         // Register your gem class
-        boolean ok = ApiManager.getInstance().registerGemClass(dev.yourname.powergemsaddon.gems.ExampleGem.class);
+        boolean ok = ApiManager.getInstance().registerGemClass(dev.yourname.powergemsaddon.gems.ExampleGem.class, this);
         if (!ok) {
             getLogger().warning("Failed to register ExampleGem");
         }
