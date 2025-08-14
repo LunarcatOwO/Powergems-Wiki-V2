@@ -24,10 +24,15 @@ export const baseOptions: BaseLayoutProps = {
     ),
   },
   links: [
-    // {
-    //   text: 'Documentation',
-    //   url: '/docs',
-    //   active: 'nested-url',
-    // },
+    {
+      text: 'Download Powergems',
+      url: 'https://modrinth.com/plugin/powergems',
+      active: 'nested-url',
+    },
+    {
+      text: 'Download Seallib',
+      url: 'https://modrinth.com/plugin/seallib',
+      active: 'nested-url',
+    },
   ],
 };

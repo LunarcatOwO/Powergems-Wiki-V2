@@ -1,5 +1,18 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/ocean.css';
 @import 'fumadocs-ui/css/preset.css';
 
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
+
+/* Utility: enforce nearest-neighbor scaling for pixel art images */
+img.pixelated,
+.pixelated img {
+	/* Fallbacks and vendor-specific options for broader support */
+	image-rendering: optimizeSpeed; /* Older versions of FF */
+	image-rendering: -moz-crisp-edges; /* Firefox */
+	image-rendering: -o-crisp-edges; /* Opera */
+	image-rendering: -webkit-optimize-contrast; /* Safari */
+	image-rendering: pixelated; /* Chrome/Edge/modern */
+	image-rendering: crisp-edges; /* Safari (newer) */
+	-ms-interpolation-mode: nearest-neighbor; /* IE */
+}
