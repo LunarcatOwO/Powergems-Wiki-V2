@@ -12,13 +12,19 @@ WORKDIR /app
 FROM base AS deps
 # Include source.config.ts in the workdir per Fumadocs Docker guide
 COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* .npmrc* source.config.ts ./
+ENV NPM_CONFIG_FETCH_RETRIES=5 \
+  NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=20000 \
+  NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT=120000 \
+  NPM_CONFIG_TIMEOUT=600000 \
+  NPM_CONFIG_LOGLEVEL=warn \
+  NPM_CONFIG_REGISTRY=https://registry.npmjs.org/
 RUN set -eux; \
   if [ -f package-lock.json ]; then \
-    npm ci; \
+  npm ci --no-audit --no-fund; \
   elif [ -f pnpm-lock.yaml ]; then \
     corepack enable pnpm && pnpm i --frozen-lockfile; \
   elif [ -f yarn.lock ]; then \
-    yarn --frozen-lockfile; \
+  yarn --frozen-lockfile --ignore-scripts=false; \
   else \
     echo "Lockfile not found." && exit 1; \
   fi
