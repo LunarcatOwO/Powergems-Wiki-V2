@@ -11,7 +11,7 @@ WORKDIR /app
 # 1) Install dependencies only when needed
 FROM base AS deps
 # Include source.config.ts in the workdir per Fumadocs Docker guide
-COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* .npmrc* source.config.ts ./
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* .npmrc* source.config.ts next.config.mjs ./
 ENV NPM_CONFIG_FETCH_RETRIES=5 \
   NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=20000 \
   NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT=120000 \
