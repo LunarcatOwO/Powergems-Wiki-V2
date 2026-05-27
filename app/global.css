@@ -1,8 +1,15 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/ocean.css';
+@import 'fumadocs-ui/css/solar.css';
 @import 'fumadocs-ui/css/preset.css';
 
-@source '../node_modules/fumadocs-ui/dist/**/*.js';
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
 
 /* Utility: enforce nearest-neighbor scaling for pixel art images */
 img.pixelated,
