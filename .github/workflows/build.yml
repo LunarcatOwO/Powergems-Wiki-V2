@@ -9,7 +9,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-  
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
@@ -18,30 +18,48 @@ jobs:
       packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      # Build Next.js ONCE, natively on the amd64 runner. The standalone output
+      # is architecture-independent JS, so it is reused for every target arch
+      # instead of being rebuilt under slow QEMU emulation.
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js (standalone)
+        run: npm run build
 
       - name: Compute lowercase owner
         id: repo
         run: echo "owner_lc=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # QEMU is only used to run the trivial adduser/COPY steps for the arm64
+      # runtime image; no compilation happens under emulation.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
-      - name: Set up QEMU (for multi-arch builds)
-        uses: docker/setup-qemu-action@v3
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+      # Assemble the multi-arch image from the single prebuilt output.
+      - name: Build and push multi-arch runtime image
+        uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Dockerfile.runtime
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
           tags: |

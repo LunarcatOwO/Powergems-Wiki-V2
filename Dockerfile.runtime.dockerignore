@@ -1,0 +1,15 @@
+# Ignore file specific to Dockerfile.runtime (BuildKit picks <dockerfile>.dockerignore
+# over the default .dockerignore). Unlike the default, this KEEPS .next and public,
+# since the runtime image copies the prebuilt standalone output from the context.
+node_modules
+.git
+.github
+.source
+coverage
+*.tsbuildinfo
+
+.DS_Store
+*.pem
+npm-debug.log*
+.env*.local
+.vercel

@@ -3,7 +3,7 @@
 # Multi-stage Dockerfile based on Next.js example and Fumadocs guidance
 # Ensures source.config.ts is available during install/build for Fumadocs MDX
 
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 # libc6-compat is sometimes needed on alpine for native modules
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
